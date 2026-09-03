@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceptos Básicos de Automatización</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-black: #0a0a0a;
+            --accent-cyan:   #00d9ff;
+            --accent-orange: #ff8c00;
+            --accent-red:    #ff3b3b;
+            --accent-yellow: #ffe600;
+            --accent-green:  #39ff14;
+            --accent-blue:   #4488ff;
+            --accent-purple: #a855f7;
+            --text-white:    #ffffff;
+            --card-bg:       #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--primary-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,217,255,0.025) 2px, rgba(0,217,255,0.025) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,217,255,0.025) 2px, rgba(0,217,255,0.025) 4px);
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0%   { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* ── HEADER ── */
+        .page-header {
+            position: relative;
+            z-index: 2;
+            padding: 60px 20px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(10,10,10,0.95), rgba(0,150,255,0.08)),
+                        url('https://images.unsplash.com/photo-1581091870622-1e0d8fd3f0e5?w=1920&q=80') center/cover;
+            border-bottom: 2px solid rgba(0,217,255,0.35);
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.4rem, 4vw, 2.6rem);
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            animation: tempGlow 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes tempGlow {
+            0%   { color: var(--accent-cyan);   text-shadow: 0 0 20px var(--accent-cyan),   0 0 60px rgba(0,217,255,0.4); }
+            50%  { color: var(--accent-purple); text-shadow: 0 0 20px var(--accent-purple), 0 0 60px rgba(168,85,247,0.4); }
+            100% { color: var(--accent-cyan);   text-shadow: 0 0 20px var(--accent-cyan),   0 0 60px rgba(0,217,255,0.4); }
+        }
+
+        .page-header p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .page-header::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-orange), var(--accent-purple));
+            margin: 0 auto;
+        }
+
+        /* ── LAYOUT ── */
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            display: grid;
+            gap: 50px;
+        }
+
+        /* ── CARDS ── */
+        .circuit-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0,217,255,0.2);
+            border-left: 5px solid var(--accent-cyan);
+            border-radius: 20px;
+            padding: 40px;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        .circuit-card.orange {
+            border-left-color: var(--accent-orange);
+            border-color: rgba(255,140,0,0.2);
+        }
+        .circuit-card.purple {
+            border-left-color: var(--accent-purple);
+            border-color: rgba(168,85,247,0.2);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── SECTION HEADER ── */
+        .circuit-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .circuit-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 20px var(--accent-cyan);
+        }
+        .circuit-title.orange { color: var(--accent-orange); text-shadow: 0 0 20px var(--accent-orange); }
+        .circuit-title.purple { color: var(--accent-purple); text-shadow: 0 0 20px var(--accent-purple); }
+
+        .badge {
+            padding: 6px 14px;
+            border: 1px solid rgba(0,217,255,0.4);
+            background: rgba(0,217,255,0.1);
+            color: var(--accent-cyan);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .badge.orange { border-color: rgba(255,140,0,0.4); background: rgba(255,140,0,0.1); color: var(--accent-orange); }
+        .badge.purple { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.1); color: var(--accent-purple); }
+        .badge.green  { border-color: rgba(57,255,20,0.4);  background: rgba(57,255,20,0.1);  color: var(--accent-green); }
+        .badge.red    { border-color: rgba(255,59,59,0.4);  background: rgba(255,59,59,0.1);  color: var(--accent-red); }
+
+        /* ── DIAGRAM CONTAINER ── */
+        .diagram-container {
+            background: #0f0f0f;
+            border: 1px solid rgba(0,217,255,0.15);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .diagram-container.orange { border-color: rgba(255,140,0,0.18); }
+        .diagram-container.purple { border-color: rgba(168,85,247,0.15); }
+        .diagram-container svg { max-width: 100%; height: auto; }
+
+        .section-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+        }
+
+        /* ── COMPONENTS GRID ── */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .component-card {
+            background: #111;
+            border: 1px solid rgba(0,217,255,0.12);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .component-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,217,255,0.15); }
+        .component-card.orange { border-color: rgba(255,140,0,0.15); }
+        .component-card.orange:hover { box-shadow: 0 8px 30px rgba(255,140,0,0.18); }
+        .component-card.purple { border-color: rgba(168,85,247,0.15); }
+        .component-card.purple:hover { box-shadow: 0 8px 30px rgba(168,85,247,0.18); }
+
+        .component-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            background: rgba(0,217,255,0.1);
+            border: 1px solid rgba(0,217,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .component-icon.orange { background: rgba(255,140,0,0.1); border-color: rgba(255,140,0,0.3); }
+        .component-icon.purple { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); }
+
+        .component-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            margin-bottom: 5px;
+        }
+        .component-name.orange { color: var(--accent-orange); }
+        .component-name.purple { color: var(--accent-purple); }
+
+        .component-desc {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        /* ── EXPLANATION BOX ── */
+        .explanation-box {
+            background: linear-gradient(135deg, rgba(0,217,255,0.05), rgba(123,44,191,0.05));
+            border: 1px solid rgba(0,217,255,0.2);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .explanation-box.orange {
+            background: linear-gradient(135deg, rgba(255,140,0,0.05), rgba(255,59,59,0.05));
+            border-color: rgba(255,140,0,0.25);
+        }
+        .explanation-box.purple {
+            background: linear-gradient(135deg, rgba(168,85,247,0.05), rgba(0,217,255,0.05));
+            border-color: rgba(168,85,247,0.25);
+        }
+        .explanation-box h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+        }
+        .explanation-box.orange h4 { color: var(--accent-orange); }
+        .explanation-box.purple h4 { color: var(--accent-purple); }
+        .explanation-box p {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.88rem;
+            line-height: 1.9;
+        }
+
+        /* ── ALERT BOX ── */
+        .alert-box {
+            background: rgba(255,230,0,0.06);
+            border: 1px solid rgba(255,230,0,0.3);
+            border-left: 4px solid var(--accent-yellow);
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .alert-box .alert-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+        .alert-box p { color: rgba(255,255,255,0.75); font-size: 0.85rem; line-height: 1.8; }
+        .alert-box strong { color: var(--accent-yellow); }
+
+        /* ── ANIMATED DASH ── */
+        .flow-path { stroke-dasharray: 8 6; animation: dash 1.2s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -28; } }
+
+        /* ── DATA TABLE ── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.87rem;
+            font-family: 'Space Mono', monospace;
+        }
+        .data-table thead tr { border-bottom: 2px solid rgba(0,217,255,0.3); }
+        .data-table th {
+            padding: 14px 12px;
+            text-align: left;
+            color: rgba(255,255,255,0.45);
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .data-table th.cyan   { color: var(--accent-cyan); }
+        .data-table th.orange { color: var(--accent-orange); }
+        .data-table th.green  { color: var(--accent-green); }
+        .data-table th.purple { color: var(--accent-purple); }
+        .data-table td {
+            padding: 14px 12px;
+            color: rgba(255,255,255,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ── TIMELINE ── */
+        .timeline { display: grid; gap: 16px; margin-bottom: 24px; }
+        .timeline-item { display: flex; gap: 16px; align-items: flex-start; }
+        .timeline-dot {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            color: var(--accent-cyan);
+            flex-shrink: 0;
+            background: rgba(0,217,255,0.07);
+            text-align: center;
+        }
+        .timeline-dot.o { border-color: var(--accent-orange); color: var(--accent-orange); background: rgba(255,140,0,0.07); }
+        .timeline-dot.g { border-color: var(--accent-green);  color: var(--accent-green);  background: rgba(57,255,20,0.07); }
+        .timeline-dot.r { border-color: var(--accent-red);    color: var(--accent-red);    background: rgba(255,59,59,0.07); }
+        .timeline-dot.p { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(168,85,247,0.07); }
+        .timeline-text { font-size: 0.85rem; color: rgba(255,255,255,0.75); line-height: 1.7; padding-top: 6px; }
+        .timeline-text strong { color: #fff; }
+
+        /* ── PROS / CONS GRID ── */
+        .proscons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        .proscons-box {
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid rgba(57,255,20,0.25);
+            background: rgba(57,255,20,0.05);
+        }
+        .proscons-box.cons {
+            border-color: rgba(255,59,59,0.25);
+            background: rgba(255,59,59,0.05);
+        }
+        .proscons-box h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+            color: var(--accent-green);
+        }
+        .proscons-box.cons h4 { color: var(--accent-red); }
+        .proscons-box ul { list-style: none; display: grid; gap: 10px; }
+        .proscons-box li {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.6;
+            padding-left: 22px;
+            position: relative;
+        }
+        .proscons-box li::before {
+            content: '+';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+        .proscons-box.cons li::before {
+            content: '−';
+            color: var(--accent-red);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(0,217,255,0.2);
+        }
+        .team-credits {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.9;
+        }
+        .team-credits strong { color: var(--accent-cyan); }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 40px 16px 30px;
+            }
+            .page-header p {
+                font-size: 0.8rem;
+            }
+            .content {
+                padding: 40px 14px;
+                gap: 30px;
+            }
+            .circuit-card {
+                padding: 22px 16px;
+                border-radius: 16px;
+            }
+            .circuit-header {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .circuit-title {
+                font-size: 1.15rem;
+            }
+            .badge {
+                font-size: 0.65rem;
+                padding: 5px 10px;
+            }
+            .diagram-container {
+                padding: 14px 6px;
+            }
+            .components-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .component-card {
+                padding: 12px;
+                gap: 10px;
+            }
+            .component-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 1.05rem;
+            }
+            .component-name {
+                font-size: 0.68rem;
+            }
+            .component-desc {
+                font-size: 0.7rem;
+                line-height: 1.5;
+            }
+            .explanation-box {
+                padding: 16px;
+            }
+            .explanation-box p {
+                font-size: 0.82rem;
+                line-height: 1.7;
+            }
+            .proscons-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .timeline-dot {
+                width: 36px;
+                height: 36px;
+                font-size: 0.6rem;
+            }
+            .timeline-text {
+                font-size: 0.8rem;
+            }
+            .data-table {
+                font-size: 0.72rem;
+            }
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+            .alert-box {
+                padding: 14px 16px;
+            }
+            .alert-box p {
+                font-size: 0.78rem;
+            }
+            .footer {
+                padding: 40px 20px;
+            }
+            .team-credits {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 1.15rem;
+            }
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+            .diagram-container svg {
+                min-width: 480px;
+            }
+            .diagram-container {
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+            .data-table {
+                min-width: 480px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ HEADER ═══════════════════════════════════════ -->
+<div class="page-header">
+    <h1>CONCEPTOS BÁSICOS DE AUTOMATIZACIÓN</h1>
+    <p>Historia, fundamentos y funcionamiento de los sistemas automatizados</p>
+</div>
+
+<div class="content">
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 1 – INTRODUCCIÓN
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card">
+        <div class="circuit-header">
+            <span class="circuit-title">INTRODUCCIÓN</span>
+            <span class="badge">¿Qué es la automatización?</span>
+        </div>
+
+        <div class="explanation-box">
+            <h4>Definición</h4>
+            <p>
+                La automatización es el uso de sistemas de control —como sensores, controladores y actuadores—
+                para hacer que un proceso funcione con una intervención humana mínima o nula. En lugar de que
+                una persona encienda, apague o ajuste algo manualmente, un sistema automatizado <strong style="color:#fff;">detecta,
+                decide y actúa</strong> por sí mismo, siguiendo reglas o algoritmos previamente programados.
+            </p>
+        </div>
+        <div class="explanation-box">
+            <h4>¿Para qué sirve?</h4>
+            <p>
+                Se utiliza para repetir tareas de forma precisa y constante, reducir errores humanos, aumentar
+                la velocidad de producción, mejorar la seguridad en ambientes peligrosos y liberar a las
+                personas de labores repetitivas para que se enfoquen en actividades de mayor valor. Hoy en día
+                está presente en fábricas, hogares, hospitales, bancos y prácticamente cualquier sector.
+            </p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 2 – HISTORIA
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card orange">
+        <div class="circuit-header">
+            <span class="circuit-title orange">HISTORIA</span>
+            <span class="badge orange">Línea de tiempo</span>
+        </div>
+
+        <p class="section-label">De los telares mecánicos a la inteligencia artificial</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot o">1784</div>
+                <div class="timeline-text">
+                    <strong>Revolución Industrial:</strong> aparecen las primeras máquinas mecánicas
+                    (como el telar hidráulico) que reemplazan el trabajo manual repetitivo.
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot o">1801</div>
+                <div class="timeline-text">
+                    <strong>Telar de Jacquard:</strong> utiliza tarjetas perforadas para "programar" patrones
+                    de tejido, un antecedente directo de la programación automatizada.
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot o">1920s</div>
+                <div class="timeline-text">
+                    <strong>Nace el término "automatización":</strong> se populariza en la industria
+                    automotriz para describir líneas de producción con maquinaria coordinada.
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot o">1960s</div>
+                <div class="timeline-text">
+                    <strong>Unimate:</strong> el primer robot industrial se instala en una planta de
+                    General Motors para manipular piezas metálicas calientes.
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot o">1968</div>
+                <div class="timeline-text">
+                    <strong>Nace el PLC</strong> (Controlador Lógico Programable), que permite reprogramar
+                    procesos industriales sin rediseñar el cableado físico.
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot o">Hoy</div>
+                <div class="timeline-text">
+                    <strong>Automatización inteligente:</strong> sensores conectados a internet (IoT),
+                    inteligencia artificial y robots colaborativos permiten sistemas que aprenden y se
+                    adaptan por sí mismos.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 3 – CONCEPTOS CLAVE
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card purple">
+        <div class="circuit-header">
+            <span class="circuit-title purple">CONCEPTOS CLAVE</span>
+            <span class="badge purple">Vocabulario esencial</span>
+        </div>
+
+        <div class="components-grid">
+            <div class="component-card purple">
+                <div class="component-icon purple">📡</div>
+                <div>
+                    <div class="component-name purple">Sensor</div>
+                    <div class="component-desc">Dispositivo que capta información del entorno (temperatura, distancia, luz, movimiento, etc.).</div>
+                </div>
+            </div>
+            <div class="component-card purple">
+                <div class="component-icon purple">⚙️</div>
+                <div>
+                    <div class="component-name purple">Actuador</div>
+                    <div class="component-desc">Elemento que ejecuta una acción física: motores, válvulas, luces, bombas.</div>
+                </div>
+            </div>
+            <div class="component-card purple">
+                <div class="component-icon purple">🧠</div>
+                <div>
+                    <div class="component-name purple">Controlador</div>
+                    <div class="component-desc">"Cerebro" del sistema (PLC, microcontrolador, computadora) que procesa datos y toma decisiones.</div>
+                </div>
+            </div>
+            <div class="component-card purple">
+                <div class="component-icon purple">🔁</div>
+                <div>
+                    <div class="component-name purple">Retroalimentación</div>
+                    <div class="component-desc">Información que regresa al controlador para comparar el resultado con lo esperado.</div>
+                </div>
+            </div>
+            <div class="component-card purple">
+                <div class="component-icon purple">🔓</div>
+                <div>
+                    <div class="component-name purple">Lazo abierto</div>
+                    <div class="component-desc">El sistema actúa sin verificar el resultado (ej. un temporizador simple).</div>
+                </div>
+            </div>
+            <div class="component-card purple">
+                <div class="component-icon purple">🔒</div>
+                <div>
+                    <div class="component-name purple">Lazo cerrado</div>
+                    <div class="component-desc">El sistema corrige su acción según la retroalimentación (ej. un termostato).</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 4 – EL CICLO DE LA AUTOMATIZACIÓN
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card">
+        <div class="circuit-header">
+            <span class="circuit-title">EL CICLO DE LA AUTOMATIZACIÓN</span>
+            <span class="badge">Sensar → Procesar → Actuar → Verificar</span>
+        </div>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 620 320" width="600" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L6,3 z" fill="rgba(0,217,255,0.7)"/>
+                    </marker>
+                </defs>
+
+                <!-- Nodo: Sensar -->
+                <circle cx="140" cy="80" r="55" fill="#111" stroke="rgba(0,217,255,0.7)" stroke-width="2"/>
+                <text x="140" y="76" text-anchor="middle" fill="rgba(0,217,255,0.9)" font-size="11" font-family="Space Mono" font-weight="700">SENSAR</text>
+                <text x="140" y="92" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="8" font-family="Space Mono">captar datos</text>
+
+                <!-- Nodo: Procesar -->
+                <circle cx="480" cy="80" r="55" fill="#111" stroke="rgba(168,85,247,0.7)" stroke-width="2"/>
+                <text x="480" y="76" text-anchor="middle" fill="rgba(168,85,247,0.9)" font-size="11" font-family="Space Mono" font-weight="700">PROCESAR</text>
+                <text x="480" y="92" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="8" font-family="Space Mono">decidir qué hacer</text>
+
+                <!-- Nodo: Actuar -->
+                <circle cx="480" cy="240" r="55" fill="#111" stroke="rgba(255,140,0,0.7)" stroke-width="2"/>
+                <text x="480" y="236" text-anchor="middle" fill="rgba(255,140,0,0.9)" font-size="11" font-family="Space Mono" font-weight="700">ACTUAR</text>
+                <text x="480" y="252" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="8" font-family="Space Mono">ejecutar acción</text>
+
+                <!-- Nodo: Verificar / Retroalimentar -->
+                <circle cx="140" cy="240" r="55" fill="#111" stroke="rgba(57,255,20,0.7)" stroke-width="2"/>
+                <text x="140" y="232" text-anchor="middle" fill="rgba(57,255,20,0.9)" font-size="10" font-family="Space Mono" font-weight="700">VERIFICAR /</text>
+                <text x="140" y="246" text-anchor="middle" fill="rgba(57,255,20,0.9)" font-size="10" font-family="Space Mono" font-weight="700">RETROALIMENTAR</text>
+
+                <!-- Flechas del ciclo -->
+                <path d="M 195 80 L 415 80" fill="none" stroke="rgba(0,217,255,0.7)" stroke-width="2.5" class="flow-path" marker-end="url(#arrow)"/>
+                <path d="M 480 135 L 480 185" fill="none" stroke="rgba(168,85,247,0.7)" stroke-width="2.5" class="flow-path" marker-end="url(#arrow)"/>
+                <path d="M 425 240 L 195 240" fill="none" stroke="rgba(255,140,0,0.7)" stroke-width="2.5" class="flow-path" marker-end="url(#arrow)"/>
+                <path d="M 140 185 L 140 135" fill="none" stroke="rgba(57,255,20,0.7)" stroke-width="2.5" class="flow-path" marker-end="url(#arrow)"/>
+            </svg>
+        </div>
+
+        <div class="explanation-box">
+            <h4>Las 4 etapas del ciclo</h4>
+            <p>
+                <strong style="color:#fff;">1. Sensar:</strong> los sensores miden una variable del proceso (temperatura, presión, posición, etc.).<br>
+                <strong style="color:#fff;">2. Procesar:</strong> el controlador compara ese dato con el valor deseado y decide qué acción tomar.<br>
+                <strong style="color:#fff;">3. Actuar:</strong> el actuador ejecuta físicamente la acción (mover, encender, detener).<br>
+                <strong style="color:#fff;">4. Verificar / Retroalimentar:</strong> el sistema vuelve a medir el resultado y ajusta el ciclo, repitiéndose de forma continua.
+            </p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 5 – VENTAJAS Y DESVENTAJAS
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card orange">
+        <div class="circuit-header">
+            <span class="circuit-title orange">VENTAJAS Y DESVENTAJAS</span>
+            <span class="badge orange">Balance</span>
+        </div>
+
+        <div class="proscons-grid">
+            <div class="proscons-box">
+                <h4>VENTAJAS</h4>
+                <ul>
+                    <li>Mayor precisión y consistencia en cada tarea repetida.</li>
+                    <li>Reduce errores causados por el cansancio o la distracción humana.</li>
+                    <li>Aumenta la velocidad y el volumen de producción.</li>
+                    <li>Mejora la seguridad al asumir tareas peligrosas.</li>
+                    <li>Funciona de manera continua, sin descanso.</li>
+                    <li>Permite recolectar datos para tomar mejores decisiones.</li>
+                </ul>
+            </div>
+            <div class="proscons-box cons">
+                <h4>DESVENTAJAS</h4>
+                <ul>
+                    <li>Alta inversión inicial en equipo y tecnología.</li>
+                    <li>Puede reducir la necesidad de empleos operativos.</li>
+                    <li>Requiere mantenimiento técnico especializado.</li>
+                    <li>Menor flexibilidad ante cambios no previstos en el proceso.</li>
+                    <li>Dependencia de energía eléctrica y sistemas de control.</li>
+                    <li>Vulnerable a fallas de software o ciberataques.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 6 – INDUSTRIAL vs SERVICIOS
+    ═══════════════════════════════════════ -->
+    <div class="circuit-card purple">
+        <div class="circuit-header">
+            <span class="circuit-title purple">AUTOMATIZACIÓN INDUSTRIAL VS. DE SERVICIOS</span>
+            <span class="badge purple">Comparativa</span>
+        </div>
+
+        <p class="section-label">Dos formas distintas de aplicar los mismos principios</p>
+        <div style="overflow-x:auto; margin-bottom:24px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="cyan">Aspecto</th>
+                        <th class="orange">Automatización industrial</th>
+                        <th class="purple">Automatización de servicios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Objetivo principal</td>
+                        <td>Producir bienes físicos (manufactura, ensamblaje)</td>
+                        <td>Agilizar procesos de atención y gestión</td>
+                    </tr>
+                    <tr>
+                        <td>Ejemplos</td>
+                        <td>Brazos robóticos, líneas de ensamblaje, PLC</td>
+                        <td>Chatbots, cajeros automáticos, software de gestión</td>
+                    </tr>
+                    <tr>
+                        <td>Entorno típico</td>
+                        <td>Fábricas y plantas de producción</td>
+                        <td>Oficinas, bancos, comercios, plataformas digitales</td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de tecnología</td>
+                        <td>Sensores físicos, actuadores, controladores industriales</td>
+                        <td>Software, algoritmos, inteligencia artificial</td>
+                    </tr>
+                    <tr>
+                        <td>Interacción con personas</td>
+                        <td>Principalmente con operadores técnicos</td>
+                        <td>Directa con el usuario o cliente final</td>
+                    </tr>
+                    <tr>
+                        <td>Resultado esperado</td>
+                        <td>Mayor producción y calidad constante</td>
+                        <td>Mayor rapidez y mejor experiencia de servicio</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box">
+            <span class="alert-icon">💡</span>
+            <p><strong>En resumen:</strong> ambas comparten los mismos conceptos base —sensores, controladores y
+            actuadores en un ciclo continuo— pero la automatización industrial se enfoca en transformar
+            materiales físicos, mientras que la automatización de servicios se enfoca en agilizar procesos
+            de información y atención al cliente.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="team-credits">
+        <strong>Realizado por:</strong><br>
+        PEREZ HERNANDEZ LAURA NAOMI • FLORES FLORES MARCO ANTONIO<br>
+        Rodríguez Espinosa Génesis Ayde • González Espinosa Noé de Jesús
+    </div>
+</footer>
+
+</body>
+</html>
